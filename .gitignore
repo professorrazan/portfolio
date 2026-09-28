@@ -1,0 +1,14 @@
+node_modules/
+.env
+# Self-signed certificate for the one-time Lightroom login page.
+.certs/
+
+# Source media stays local. The processed copies in site/img and site/video are
+# what gets published, and are rebuilt from these by `npm run build`.
+# (The original banner video is ~150 MB, over GitHub's 100 MB file limit.)
+/video/
+/photos/
+/Photo Of Razan.jpeg
+
+# Local Claude app permissions
+.claude/settings.local.json

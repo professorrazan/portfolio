@@ -1,0 +1,21 @@
+{
+  "name": "razan-ahmad-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static photography portfolio for Razan Ahmad",
+  "type": "module",
+  "scripts": {
+    "import": "node scripts/import-lightroom.js",
+    "images": "node scripts/process-images.js",
+    "video": "node scripts/process-video.js",
+    "site": "node scripts/build-site.js",
+    "build": "node scripts/import-lightroom.js --optional && npm run images && npm run video && npm run site",
+    "serve": "node scripts/serve.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
+  }
+}
