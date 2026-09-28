@@ -69,7 +69,7 @@ function homePage({ galleries, about, og }) {
       </script>
       <div class="hero-scrim"></div>
       <div class="hero-content">
-        <p class="label hero-label">Melbourne · Portrait, graduation &amp; event photographer</p>
+        <p class="label hero-label">Melbourne · Portrait, travel &amp; event photographer &amp; videographer</p>
         <h1 class="hero-title" id="hero-title">Light, colour<br> &amp; the people in it.</h1>
         <div class="btn-row">
           <a class="btn btn-primary btn-lg" href="#galleries">See the work</a>
@@ -115,8 +115,8 @@ function homePage({ galleries, about, og }) {
 `;
 
   return page({
-    title: `${site.name} | Melbourne Portrait & Graduation Photographer`,
-    description: 'Razan Ahmad is a Melbourne photographer for portraits, graduations, events and creative concept shoots. See the galleries and book a session.',
+    title: `${site.name} | Melbourne Photographer & Videographer`,
+    description: 'Razan Ahmad is a Melbourne photographer and videographer for portraits, travel, graduations, events and creative concept shoots. See the galleries and book a session.',
     current: null,
     head: '<link rel="preload" as="image" href="video/banner-poster.jpg" fetchpriority="high">',
     og,
