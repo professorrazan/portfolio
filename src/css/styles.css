@@ -272,7 +272,7 @@ a:hover { opacity: 0.8; }
 .menu-toggle[aria-expanded="true"] .menu-line-1 { transform: translateY(4px) rotate(45deg); }
 .menu-toggle[aria-expanded="true"] .menu-line-2 { transform: translateY(-4px) rotate(-45deg); }
 
-@media (max-width: 1023px) {
+@media (max-width: 639px) {
   .header-inner { min-height: 64px; padding: 0 12px 0 20px; }
   .brand { font-size: 24px; }
 

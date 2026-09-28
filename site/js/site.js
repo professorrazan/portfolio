@@ -37,7 +37,7 @@
   });
 
   // Reset when resizing up to the desktop layout.
-  matchMedia('(min-width: 1024px)').addEventListener('change', function (mq) {
+  matchMedia('(min-width: 640px)').addEventListener('change', function (mq) {
     if (mq.matches) setOpen(false, false);
   });
 })();

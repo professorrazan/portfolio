@@ -44,9 +44,6 @@ export function placeholder(label, { ratio, className = '' } = {}) {
 
 const navItems = [
   { key: 'work', label: 'Work', href: 'index.html#galleries' },
-  { key: 'graduation', label: 'Graduation', href: 'graduation.html' },
-  { key: 'fashion-concept', label: 'Fashion/Concept', href: 'fashion-concept.html' },
-  { key: 'events', label: 'Events', href: 'events.html' },
   { key: 'about', label: 'About', href: 'about.html' },
 ];
 

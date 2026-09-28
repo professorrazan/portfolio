@@ -32,9 +32,6 @@
       <nav class="site-nav" id="site-nav" aria-label="Main">
         <ul class="nav-list">
         <li><a class="nav-link" href="index.html#galleries">Work</a></li>
-        <li><a class="nav-link" href="graduation.html">Graduation</a></li>
-        <li><a class="nav-link" href="fashion-concept.html">Fashion/Concept</a></li>
-        <li><a class="nav-link" href="events.html">Events</a></li>
         <li><a class="nav-link" href="about.html">About</a></li>
         <li class="nav-book"><a class="btn btn-primary btn-sm" href="about.html#contact">Book</a></li>
         </ul>
@@ -176,16 +173,37 @@
       </ul>
     </section>
 
-    <section class="band" aria-labelledby="grad-title">
+    <section class="band" aria-labelledby="banner-title" data-banner>
       <div class="band-inner">
         <div class="band-text">
-          <p class="label label-dot">Graduation season</p>
-          <h2 class="h-band" id="grad-title">Graduating this December?</h2>
-          <p class="lede">Campus and city sessions around Melbourne — solo, with family or with friends.</p>
+          <p class="label label-dot" data-banner-label>Spring</p>
+          <h2 class="h-band" id="banner-title" data-banner-heading>Spring sessions for two (or more)</h2>
+          <p class="lede" data-banner-text>Couples, friends and family shoots around Melbourne as the days get longer.</p>
         </div>
-        <a class="btn btn-primary btn-xl" href="about.html#contact">Check availability</a>
+        <a class="btn btn-primary btn-xl" href="about.html?shoot=couple-group#contact" data-banner-button>Book a session</a>
       </div>
     </section>
+    <script type="application/json" id="banner-data">{"list":[{"from":"12-16","to":"02-29","label":"Summer","heading":"Planning a summer celebration?","text":"Birthdays, launches and parties around Melbourne — relaxed coverage that catches the moments in between.","button":"Book your date","shoot":"events","href":"about.html?shoot=events#contact"},{"from":"03-01","to":"05-31","label":"Autumn light","heading":"Portraits in the autumn light","text":"Solo, couple and friends sessions around Melbourne while the colours turn.","button":"Book a portrait session","shoot":"travel-portraits","href":"about.html?shoot=travel-portraits#contact"},{"from":"06-01","to":"08-31","label":"Winter studio season","heading":"Try a creative concept shoot","text":"RGB light, gels and bold ideas — indoor shoots made for Melbourne winters.","button":"Plan a concept shoot","shoot":"fashion-concept","href":"about.html?shoot=fashion-concept#contact"},{"from":"09-01","to":"09-30","label":"Spring","heading":"Spring sessions for two (or more)","text":"Couples, friends and family shoots around Melbourne as the days get longer.","button":"Book a session","shoot":"couple-group","href":"about.html?shoot=couple-group#contact"},{"from":"10-01","to":"12-15","label":"Graduation season","heading":"Graduating this December?","text":"Campus and city sessions around Melbourne — solo, with family or with friends.","button":"Check availability","shoot":"graduation","href":"about.html?shoot=graduation#contact"}],"fallback":{"label":"Bookings open","heading":"Have a shoot in mind?","text":"Portraits, events, travel and creative concepts around Melbourne.","button":"Book a session","shoot":null,"href":"about.html#contact"}}</script>
+    <script>
+    (function () {
+      var band = document.querySelector('[data-banner]');
+      var data = JSON.parse(document.getElementById('banner-data').textContent);
+      var parts = new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Melbourne', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+      var get = function (t) { return parts.filter(function (p) { return p.type === t; })[0].value; };
+      var md = get('month') + '-' + get('day');
+      var pick = data.list.filter(function (b) {
+        return b.from <= b.to ? md >= b.from && md <= b.to : md >= b.from || md <= b.to;
+      })[0] || data.fallback;
+      if (!pick) { band.hidden = true; return; }
+      band.hidden = false;
+      band.querySelector('[data-banner-label]').textContent = pick.label;
+      band.querySelector('[data-banner-heading]').textContent = pick.heading;
+      band.querySelector('[data-banner-text]').textContent = pick.text;
+      var btn = band.querySelector('[data-banner-button]');
+      btn.textContent = pick.button;
+      btn.setAttribute('href', pick.href);
+    })();
+    </script>
 
     <section class="section teaser" aria-labelledby="teaser-title">
       <div class="teaser-media"><picture><source type="image/webp" srcset="img/about/me-533.webp 533w, img/about/me-1067.webp 1067w, img/about/me-1600.webp 1600w" sizes="(min-width: 900px) 480px, 100vw"><img class="cover-img" src="img/about/me-1067.jpg" width="4000" height="6000" alt="Razan Ahmad taking a photo on a rocky path among tall pine trees" loading="lazy" decoding="async"></picture></div>

@@ -8,6 +8,14 @@
   var email = form.dataset.email;
   var required = [].slice.call(form.querySelectorAll('[required]'));
 
+  // Links like about.html?shoot=graduation#contact (from the home page banner)
+  // pre-select that type of shoot.
+  var shoot = new URLSearchParams(location.search).get('shoot');
+  if (shoot) {
+    var option = form.querySelector('option[data-shoot="' + shoot.replace(/[^a-z0-9-]/gi, '') + '"]');
+    if (option) option.selected = true;
+  }
+
   function setStatus(message, kind) {
     status.textContent = message;
     status.classList.toggle('is-success', kind === 'success');

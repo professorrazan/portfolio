@@ -8,8 +8,74 @@ import { page, picture, placeholder, largestWebp, esc, icons, instagramUrl } fro
 const FULL_WIDTH_EVERY = 9;
 const BIO = [
   "I'm a Melbourne-based photographer and videographer. I love portraits that feel personal, graduation photos that capture the milestone, and creative shoots where I get to play with light and colour. Travel is one of my favourite ways to shoot — I love capturing the people and places I meet on the road.",
-  "I also make videos, bringing the same eye for light, colour and people to moving images.",];
+  "I also make videos, bringing the same eye for light, colour and people to moving images.",
+];
 const GEAR = ['Sony A6400', 'Tamron 17–70mm f/2.8', 'Sigma 56mm f/1.4', 'RGB video light'];
+
+/* ---------- Seasonal banner ---------- */
+
+// Today's date in Melbourne as "MM-DD".
+function melbourneMonthDay(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Melbourne', month: '2-digit', day: '2-digit' }).formatToParts(date);
+  return `${parts.find((p) => p.type === 'month').value}-${parts.find((p) => p.type === 'day').value}`;
+}
+
+// Ranges may wrap past New Year (e.g. 12-01 to 02-28).
+const inRange = (md, from, to) => (from <= to ? md >= from && md <= to : md >= from || md <= to);
+
+function bannerHref(b) {
+  return b.shoot ? `about.html?shoot=${encodeURIComponent(b.shoot)}#contact` : 'about.html#contact';
+}
+
+// Banners as the page script needs them, plus the one to render at build time
+// (shown if JavaScript is off; the script re-checks the date on every visit).
+function bannerData() {
+  const list = (site.banners ?? []).map((b) => ({ ...b, href: bannerHref(b) }));
+  const fallback = site.bannerFallback ? { ...site.bannerFallback, href: bannerHref(site.bannerFallback) } : null;
+  const today = melbourneMonthDay();
+  const current = list.find((b) => inRange(today, b.from, b.to)) ?? fallback;
+  return { list, fallback, current };
+}
+
+function bannerSection() {
+  const { list, fallback, current } = bannerData();
+  if (!list.length && !fallback) return '';
+  const b = current ?? { label: '', heading: '', text: '', button: '', href: 'about.html#contact' };
+  // Keep "</script>" out of the embedded JSON.
+  const json = JSON.stringify({ list, fallback }).replace(/</g, '\\u003c');
+  return `
+    <section class="band" aria-labelledby="banner-title" data-banner${current ? '' : ' hidden'}>
+      <div class="band-inner">
+        <div class="band-text">
+          <p class="label label-dot" data-banner-label>${esc(b.label)}</p>
+          <h2 class="h-band" id="banner-title" data-banner-heading>${esc(b.heading)}</h2>
+          <p class="lede" data-banner-text>${esc(b.text)}</p>
+        </div>
+        <a class="btn btn-primary btn-xl" href="${esc(b.href)}" data-banner-button>${esc(b.button)}</a>
+      </div>
+    </section>
+    <script type="application/json" id="banner-data">${json}</script>
+    <script>
+    (function () {
+      var band = document.querySelector('[data-banner]');
+      var data = JSON.parse(document.getElementById('banner-data').textContent);
+      var parts = new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Melbourne', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+      var get = function (t) { return parts.filter(function (p) { return p.type === t; })[0].value; };
+      var md = get('month') + '-' + get('day');
+      var pick = data.list.filter(function (b) {
+        return b.from <= b.to ? md >= b.from && md <= b.to : md >= b.from || md <= b.to;
+      })[0] || data.fallback;
+      if (!pick) { band.hidden = true; return; }
+      band.hidden = false;
+      band.querySelector('[data-banner-label]').textContent = pick.label;
+      band.querySelector('[data-banner-heading]').textContent = pick.heading;
+      band.querySelector('[data-banner-text]').textContent = pick.text;
+      var btn = band.querySelector('[data-banner-button]');
+      btn.textContent = pick.button;
+      btn.setAttribute('href', pick.href);
+    })();
+    </script>`;
+}
 
 async function loadData() {
   let data;
@@ -91,17 +157,7 @@ function homePage({ galleries, about, og }) {
         ${cards}
       </ul>
     </section>
-
-    <section class="band" aria-labelledby="grad-title">
-      <div class="band-inner">
-        <div class="band-text">
-          <p class="label label-dot">Graduation season</p>
-          <h2 class="h-band" id="grad-title">Graduating this December?</h2>
-          <p class="lede">Campus and city sessions around Melbourne — solo, with family or with friends.</p>
-        </div>
-        <a class="btn btn-primary btn-xl" href="about.html#contact">Check availability</a>
-      </div>
-    </section>
+${bannerSection()}
 
     <section class="section teaser" aria-labelledby="teaser-title">
       <div class="teaser-media">${aboutMedia}</div>
@@ -259,7 +315,7 @@ function aboutPage({ galleries, about, og }) {
     : placeholder('Photo of Razan');
   const shoots = galleries.map((g) => `<li>${esc(g.title)}</li>`).join('');
   const gear = GEAR.map((x) => `<li>${esc(x)}</li>`).join('');
-  const options = galleries.map((g) => `<option>${esc(g.title)}</option>`).join('\n              ');
+  const options = galleries.map((g) => `<option data-shoot="${g.slug}">${esc(g.title)}</option>`).join('\n              ');
   const endpoint = site.formspreeEndpoint;
 
   const body = `

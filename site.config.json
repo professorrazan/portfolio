@@ -3,5 +3,61 @@
   "email": "razan.ahmad0320@gmail.com",
   "instagram": "raaazzzzii",
   "formspreeEndpoint": "https://formspree.io/f/xyezlgwo",
-  "siteUrl": "https://professorrazan.github.io/portfolio/"
+  "siteUrl": "https://professorrazan.github.io/portfolio/",
+
+  "_banners": "Home page banner. Each visitor sees the entry whose from/to dates (MM-DD, Melbourne time) include today; a range may wrap past New Year. 'shoot' is a gallery folder name and pre-selects that option in the contact form. If no entry matches, 'bannerFallback' is shown (set it to null to hide the band).",
+  "banners": [
+    {
+      "from": "12-16",
+      "to": "02-29",
+      "label": "Summer",
+      "heading": "Planning a summer celebration?",
+      "text": "Birthdays, launches and parties around Melbourne — relaxed coverage that catches the moments in between.",
+      "button": "Book your date",
+      "shoot": "events"
+    },
+    {
+      "from": "03-01",
+      "to": "05-31",
+      "label": "Autumn light",
+      "heading": "Portraits in the autumn light",
+      "text": "Solo, couple and friends sessions around Melbourne while the colours turn.",
+      "button": "Book a portrait session",
+      "shoot": "travel-portraits"
+    },
+    {
+      "from": "06-01",
+      "to": "08-31",
+      "label": "Winter studio season",
+      "heading": "Try a creative concept shoot",
+      "text": "RGB light, gels and bold ideas — indoor shoots made for Melbourne winters.",
+      "button": "Plan a concept shoot",
+      "shoot": "fashion-concept"
+    },
+    {
+      "from": "09-01",
+      "to": "09-30",
+      "label": "Spring",
+      "heading": "Spring sessions for two (or more)",
+      "text": "Couples, friends and family shoots around Melbourne as the days get longer.",
+      "button": "Book a session",
+      "shoot": "couple-group"
+    },
+    {
+      "from": "10-01",
+      "to": "12-15",
+      "label": "Graduation season",
+      "heading": "Graduating this December?",
+      "text": "Campus and city sessions around Melbourne — solo, with family or with friends.",
+      "button": "Check availability",
+      "shoot": "graduation"
+    }
+  ],
+  "bannerFallback": {
+    "label": "Bookings open",
+    "heading": "Have a shoot in mind?",
+    "text": "Portraits, events, travel and creative concepts around Melbourne.",
+    "button": "Book a session",
+    "shoot": null
+  }
 }
