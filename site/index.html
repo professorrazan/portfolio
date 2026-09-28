@@ -17,7 +17,8 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif&display=swap">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&amp;family=Instrument+Serif&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&amp;family=Instrument+Serif&amp;display=swap"></noscript>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="preload" as="image" href="video/banner-poster.jpg" fetchpriority="high">
   <script>document.documentElement.classList.add('js')</script>
@@ -43,11 +44,18 @@
   <main id="main">
 
     <section class="hero" aria-labelledby="hero-title">
-      <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="video/banner-poster.jpg" aria-hidden="true" tabindex="-1">
-        <source src="video/banner-720.mp4" type="video/mp4" media="(max-width: 900px)">
-        <source src="video/banner.mp4" type="video/mp4">
-      </video>
-      <script>(function(v){if(matchMedia('(prefers-reduced-motion: reduce)').matches){v.removeAttribute('autoplay');v.preload='none';v.pause();}})(document.currentScript.previousElementSibling)</script>
+      <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="video/banner-poster.jpg" aria-hidden="true" tabindex="-1"></video>
+      <script>
+        // Pick one video for this screen (phones get the lighter 720p file); with
+        // reduced motion, load none and keep showing the poster.
+        (function (v) {
+          if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            v.removeAttribute('autoplay');
+            return;
+          }
+          v.src = matchMedia('(max-width: 900px)').matches ? 'video/banner-720.mp4' : 'video/banner.mp4';
+        })(document.currentScript.previousElementSibling);
+      </script>
       <div class="hero-scrim"></div>
       <div class="hero-content">
         <p class="label hero-label">Melbourne · Portrait, graduation &amp; event photographer</p>

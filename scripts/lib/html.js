@@ -8,7 +8,10 @@ export const esc = (s) => String(s ?? '')
   .replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;');
 
-export const instagramUrl = `https://www.instagram.com/${site.instagram}/`;
+// Loaded without blocking the first paint; text shows in the fallback font until it arrives.
+const FONTS_URL = 'https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&amp;family=Instrument+Serif&amp;display=swap';
+
+export const instagramUrl =`https://www.instagram.com/${site.instagram}/`;
 
 // Absolute URL when siteUrl is configured (needed for Open Graph), relative otherwise.
 export const absUrl = (p) => (site.siteUrl ? new URL(p, site.siteUrl.replace(/\/?$/, '/')).href : p);
@@ -105,7 +108,8 @@ export function page({ title, description, current, body, og, head = '', scripts
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif&display=swap">
+  <link rel="preload" as="style" href="${FONTS_URL}" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="${FONTS_URL}"></noscript>
   <link rel="stylesheet" href="css/styles.css">
   ${head}
   <script>document.documentElement.classList.add('js')</script>

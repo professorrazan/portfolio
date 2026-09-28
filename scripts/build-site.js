@@ -55,11 +55,18 @@ function homePage({ galleries, about, og }) {
 
   const body = `
     <section class="hero" aria-labelledby="hero-title">
-      <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="video/banner-poster.jpg" aria-hidden="true" tabindex="-1">
-        <source src="video/banner-720.mp4" type="video/mp4" media="(max-width: 900px)">
-        <source src="video/banner.mp4" type="video/mp4">
-      </video>
-      <script>(function(v){if(matchMedia('(prefers-reduced-motion: reduce)').matches){v.removeAttribute('autoplay');v.preload='none';v.pause();}})(document.currentScript.previousElementSibling)</script>
+      <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="video/banner-poster.jpg" aria-hidden="true" tabindex="-1"></video>
+      <script>
+        // Pick one video for this screen (phones get the lighter 720p file); with
+        // reduced motion, load none and keep showing the poster.
+        (function (v) {
+          if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            v.removeAttribute('autoplay');
+            return;
+          }
+          v.src = matchMedia('(max-width: 900px)').matches ? 'video/banner-720.mp4' : 'video/banner.mp4';
+        })(document.currentScript.previousElementSibling);
+      </script>
       <div class="hero-scrim"></div>
       <div class="hero-content">
         <p class="label hero-label">Melbourne · Portrait, graduation &amp; event photographer</p>
