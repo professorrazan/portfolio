@@ -3,7 +3,7 @@
   "email": "razan.ahmad0320@gmail.com",
   "instagram": "raaazzzzii",
   "formspreeEndpoint": "https://formspree.io/f/xyezlgwo",
-  "siteUrl": "https://professorrazan.github.io/portfolio/",
+  "siteUrl": "https://razan.pictures/",
 
   "_banners": "Home page banner. Each visitor sees the entry whose from/to dates (MM-DD, Melbourne time) include today; a range may wrap past New Year. 'shoot' is a gallery folder name and pre-selects that option in the contact form. If no entry matches, 'bannerFallback' is shown (set it to null to hide the band).",
   "banners": [
