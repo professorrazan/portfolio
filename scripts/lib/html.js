@@ -82,10 +82,15 @@ function footer() {
 
 /**
  * Full HTML document.
- * @param {object} p title, description, current (nav key), body, og (image record), head (extra), scripts
+ * @param {object} p title, description, path (page file, '' for home), current (nav key), body,
+ *                  og (image record), head (extra), jsonLd (structured data object), scripts
  */
-export function page({ title, description, current, body, og, head = '', scripts = [] }) {
+export function page({ title, description, path = '', current, body, og, head = '', jsonLd = null, scripts = [] }) {
+  // Canonical address tells search engines razan.pictures is the real home of each
+  // page (not the old github.io address). Only possible once siteUrl is set.
+  const canonical = site.siteUrl ? absUrl(path) : '';
   const ogTags = [
+    canonical ? `<link rel="canonical" href="${esc(canonical)}">\n  <meta property="og:url" content="${esc(canonical)}">` : '',
     `<meta property="og:type" content="website">`,
     `<meta property="og:site_name" content="${esc(site.name)}">`,
     `<meta property="og:title" content="${esc(title)}">`,
@@ -109,6 +114,7 @@ export function page({ title, description, current, body, og, head = '', scripts
   <noscript><link rel="stylesheet" href="${FONTS_URL}"></noscript>
   <link rel="stylesheet" href="css/styles.css">
   ${head}
+  ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>` : ''}
   <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>

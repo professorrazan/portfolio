@@ -3,7 +3,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { SITE_DIR, SRC_DIR, GALLERIES_JSON, site, categories } from './lib/config.js';
-import { page, picture, placeholder, largestWebp, esc, icons, instagramUrl } from './lib/html.js';
+import { page, picture, placeholder, largestWebp, esc, icons, instagramUrl, absUrl } from './lib/html.js';
 
 const FULL_WIDTH_EVERY = 9;
 const BIO = [
@@ -173,12 +173,61 @@ ${bannerSection()}
   return page({
     title: `${site.name} | Melbourne Photographer & Videographer`,
     description: 'Razan Ahmad is a Melbourne photographer and videographer for portraits, travel, graduations, events and creative concept shoots. See the galleries and book a session.',
+    path: '',
     current: null,
     head: '<link rel="preload" as="image" href="video/banner-poster.jpg" fetchpriority="high">',
     og,
+    jsonLd: homeStructuredData(og),
     body,
     scripts: ['js/home.js'],
   });
+}
+
+// Structured data (schema.org) so search engines understand who the site is about.
+// Only the city is given as an address; no street address is published.
+function homeStructuredData(og) {
+  if (!site.siteUrl) return null;
+  const url = absUrl('');
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': `${url}#website`,
+        url,
+        name: site.name,
+        inLanguage: 'en-AU',
+        publisher: { '@id': `${url}#person` },
+      },
+      {
+        '@type': 'Person',
+        '@id': `${url}#person`,
+        name: site.name,
+        url,
+        jobTitle: 'Photographer and videographer',
+        description: 'Melbourne-based photographer and videographer for portraits, travel, graduations, events and creative concept shoots.',
+        ...(og ? { image: absUrl(og.path) } : {}),
+        email: `mailto:${site.email}`,
+        address: { '@type': 'PostalAddress', addressLocality: 'Melbourne', addressRegion: 'VIC', addressCountry: 'AU' },
+        sameAs: [instagramUrl],
+      },
+    ],
+  };
+}
+
+// sitemap.xml and robots.txt so search engines can find every page.
+function seoFiles(pageNames) {
+  if (!site.siteUrl) return [];
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = pageNames
+    .map((name) => (name === 'index.html' ? '' : name))
+    .sort((a, b) => (a === '' ? -1 : b === '' ? 1 : a.localeCompare(b)))
+    .map((p) => `  <url>\n    <loc>${esc(absUrl(p))}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`)
+    .join('\n');
+  return [
+    ['sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`],
+    ['robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${absUrl('sitemap.xml')}\n`],
+  ];
 }
 
 /* ---------- Gallery ---------- */
@@ -300,6 +349,7 @@ ${lightbox}
   return page({
     title: `${g.title} Photography | ${site.name}, Melbourne`,
     description: `${g.title} photography by ${site.name}, Melbourne: ${g.description.charAt(0).toLowerCase()}${g.description.slice(1)}.`,
+    path: `${g.slug}.html`,
     current: g.slug,
     og,
     body,
@@ -388,6 +438,7 @@ function aboutPage({ galleries, about, og }) {
   return page({
     title: `About & Contact | ${site.name}, Melbourne Photographer`,
     description: 'Meet Razan Ahmad, a Melbourne photographer and videographer. Get in touch to book a graduation, portrait, event, travel or concept shoot.',
+    path: 'about.html',
     current: 'about',
     og,
     body,
@@ -424,6 +475,7 @@ async function main() {
   });
 
   for (const [name, html] of pages) await fs.writeFile(path.join(SITE_DIR, name), html);
+  for (const [name, text] of seoFiles([...pages.keys()])) await fs.writeFile(path.join(SITE_DIR, name), text);
   await copyDir(SRC_DIR, SITE_DIR);
   // GitHub Pages: serve files as-is (no Jekyll processing).
   await fs.writeFile(path.join(SITE_DIR, '.nojekyll'), '');
