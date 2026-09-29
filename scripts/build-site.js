@@ -6,6 +6,8 @@ import { SITE_DIR, SRC_DIR, GALLERIES_JSON, site, categories } from './lib/confi
 import { page, picture, placeholder, largestWebp, esc, icons, instagramUrl, absUrl } from './lib/html.js';
 
 const FULL_WIDTH_EVERY = 9;
+// Screens that get the vertical banner video and poster.
+const PORTRAIT_HERO = '(orientation: portrait) and (max-width: 600px)';
 const BIO = [
   "I'm a Melbourne-based photographer and videographer. I love portraits that feel personal, graduation photos that capture the milestone, and creative shoots where I get to play with light and colour. Travel is one of my favourite ways to shoot — I love capturing the people and places I meet on the road.",
   "I also make videos, bringing the same eye for light, colour and people to moving images.",
@@ -121,16 +123,19 @@ function homePage({ galleries, about, og }) {
 
   const body = `
     <section class="hero" aria-labelledby="hero-title">
-      <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="video/banner-poster.jpg" aria-hidden="true" tabindex="-1"></video>
+      <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
       <script>
-        // Pick one video for this screen (phones get the lighter 720p file); with
-        // reduced motion, load none and keep showing the poster.
+        // Phones in portrait get a vertical crop cut at full resolution (they only show
+        // the middle slice of a wide video); everything else gets the 1080p video.
+        // With reduced motion, only the poster is shown.
         (function (v) {
+          var portrait = matchMedia('${PORTRAIT_HERO}').matches;
+          v.poster = portrait ? 'video/banner-poster-portrait.jpg' : 'video/banner-poster.jpg';
           if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
             v.removeAttribute('autoplay');
             return;
           }
-          v.src = matchMedia('(max-width: 900px)').matches ? 'video/banner-720.mp4' : 'video/banner.mp4';
+          v.src = portrait ? 'video/banner-portrait.mp4' : 'video/banner.mp4';
         })(document.currentScript.previousElementSibling);
       </script>
       <div class="hero-scrim"></div>
@@ -175,7 +180,8 @@ ${bannerSection()}
     description: 'Razan Ahmad is a Melbourne photographer and videographer for portraits, travel, graduations, events and creative concept shoots. See the galleries and book a session.',
     path: '',
     current: null,
-    head: '<link rel="preload" as="image" href="video/banner-poster.jpg" fetchpriority="high">',
+    head: `<link rel="preload" as="image" href="video/banner-poster-portrait.jpg" media="${PORTRAIT_HERO}" fetchpriority="high">
+  <link rel="preload" as="image" href="video/banner-poster.jpg" media="not all and ${PORTRAIT_HERO}" fetchpriority="high">`,
     og,
     jsonLd: homeStructuredData(og),
     body,
