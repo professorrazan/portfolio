@@ -372,9 +372,8 @@ function aboutPage({ galleries, about, og }) {
             <label for="c-msg">Message</label>
             <textarea id="c-msg" name="message" rows="6" required></textarea>
           </div>
-          <div class="hp" aria-hidden="true">
-            <label for="c-gotcha">Leave this empty</label>
-            <input id="c-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+          <div class="hp" aria-hidden="true" hidden>
+            <input id="c-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" style="display:none">
           </div>
           <input type="hidden" name="_subject" value="New enquiry from the portfolio site">
           <div class="field-wide form-actions">

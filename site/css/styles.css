@@ -775,7 +775,9 @@ html:has(.lightbox[open]) { overflow: hidden; }
 }
 .field [aria-invalid="true"] { border-color: var(--error); }
 
-.hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+/* Spam trap for Formspree (_gotcha). Fully hidden with display:none so browser
+   autofill never fills it; a filled trap makes Formspree mark the enquiry as spam. */
+.hp { display: none !important; }
 
 .form-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px 24px; }
 .form-status { font-size: 15px; line-height: 1.5; }
